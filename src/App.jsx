@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import NewProject from './components/NewProject';
-import NoProjectSelected from './components/NoProjectSelected';
-import ProjectsSidebar from './components/ProjectsSidebar';
-import SelectedProject from './components/SelectedProject';
+import { useState } from "react";
+import NewProject from "./components/NewProject";
+import NoProjectSelected from "./components/NoProjectSelected";
+import ProjectsSidebar from "./components/ProjectsSidebar";
+import SelectedProject from "./components/SelectedProject";
 
 function App() {
   const [projectsState, setProjectsState] = useState({
@@ -10,12 +10,37 @@ function App() {
     projects: [
       {
         id: 39483948,
-        title: 'test',
-        description: 'des',
-        dueDate: '2025-01-01',
+        title: "test",
+        description: "des",
+        dueDate: "2025-01-01",
       },
     ],
+    tasks: [],
   });
+
+  function handleAddTask(text) {
+    setProjectsState((prevState) => {
+      const taskId = Math.random();
+      const newTask = {
+        text: text,
+        projectId: prevState.selectedProjectId,
+        id: taskId,
+      };
+      return {
+        ...prevState,
+        tasks: [...prevState.tasks, newTask],
+      };
+    });
+  }
+
+  function handleDeleteTask(id) {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        tasks: prevState.tasks.filter((task) => task.id !== id),
+      };
+    });
+  }
 
   function handleSelectProject(id) {
     setProjectsState((prevState) => ({
@@ -68,7 +93,13 @@ function App() {
   );
 
   let content = (
-    <SelectedProject project={selectedProject} onDelete={handleDeleteProject} />
+    <SelectedProject
+      project={selectedProject}
+      onDelete={handleDeleteProject}
+      onAddTask={handleAddTask}
+      onDeleteTask={handleDeleteTask}
+      tasks={projectsState.tasks}
+    />
   );
 
   if (projectsState.selectedProjectId === null) {
